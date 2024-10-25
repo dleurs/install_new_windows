@@ -21,6 +21,32 @@ function prompt {
 function gof {
     Set-Location 'C:\Users\dleurs\Documents\Flutter'
 }
+
+function codeProfile {
+    code $PROFILE
+}
+
+function pull {
+    param (
+        [string]$branch
+    )
+
+    $initialBranch = git rev-parse --abbrev-ref HEAD
+
+    if ([string]::IsNullOrEmpty($branch)) {
+        $branch = $initialBranch
+    } else {
+        git checkout $branch
+    }
+
+    git fetch
+    git pull origin $branch
+    git status
+
+    if (-not [string]::IsNullOrEmpty($branch) -and $branch -ne $initialBranch) {
+        git checkout $initialBranch
+    }
+}
 ```
 Open Powershell in admin, then copy/paste and select 1 and restart windows
 ```
