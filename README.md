@@ -47,6 +47,35 @@ function pull {
         git checkout $initialBranch
     }
 }
+
+function push {
+    param (
+        [string]$branch,
+        [switch]$forceWithLease
+    )
+
+    # Get the current branch if none is provided
+    $initialBranch = git rev-parse --abbrev-ref HEAD
+
+    if ([string]::IsNullOrEmpty($branch)) {
+        $branch = $initialBranch
+    }
+
+    # Check if the branch is valid
+    if (-not (git branch --list $branch)) {
+        Write-Host "Error: Branch '$branch' does not exist." -ForegroundColor Red
+        return
+    }
+
+    # Prepare the push command
+    $pushCommand = "git push origin $branch"
+    if ($forceWithLease) {
+        $pushCommand += " --force-with-lease"
+    }
+
+    # Execute the push command
+    Invoke-Expression $pushCommand
+}
 ```
 Open Powershell in admin, then copy/paste and select 1 and restart windows
 ```
